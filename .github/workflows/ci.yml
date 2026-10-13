@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # No `bun-version` input: setup-bun reads `packageManager` from package.json.
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Test
+        run: bun test
+
+      - name: Build
+        run: bun run build
+
+  # Exercises the real deploy artifact from the Dockerfile against Postgres, so a
+  # bad bump of the `oven/bun` base image fails here rather than in Rock8Cloud.
+  docker:
+    name: docker
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: emdash
+          POSTGRES_USER: emdash
+          POSTGRES_PASSWORD: emdash
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U emdash" --health-interval 5s --health-retries 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Build image
+        run: docker build -t emdash-blueprint .
+
+      - name: Smoke test
+        run: |
+          docker run -d --name app --network host \
+            -e DATABASE_URL=postgres://emdash:emdash@localhost:5432/emdash \
+            emdash-blueprint
+          for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4321/ && exit 0; sleep 2; done
+          docker logs app; exit 1

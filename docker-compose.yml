@@ -1,0 +1,41 @@
+# Local development services.
+# Rock8Cloud provides managed PostgreSQL and S3 storage in deployment —
+# this compose file only mirrors them for local development.
+#
+#   docker compose up -d                         Postgres for `bun run dev`
+#   docker compose --profile app up -d --build   + the production image
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: emdash
+      POSTGRES_USER: emdash
+      POSTGRES_PASSWORD: emdash
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U emdash -d emdash"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    profiles: [app]
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://emdash:emdash@db:5432/emdash
+    ports:
+      - "${APP_PORT:-4321}:4321"
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
+  uploads:

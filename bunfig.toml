@@ -1,0 +1,14 @@
+[install]
+# Supply-chain hardening: skip releases younger than 24h (EmDash packages exempt).
+minimumReleaseAge = 86400
+minimumReleaseAgeExcludes = [
+  "emdash",
+  "@emdash-cms/admin",
+  "@emdash-cms/auth",
+  "@emdash-cms/blocks",
+  "@emdash-cms/gutenberg-to-portable-text",
+  "@emdash-cms/plugin-types",
+  "@emdash-cms/registry-client",
+  "@emdash-cms/registry-lexicons",
+  "@emdash-cms/registry-verification",
+]
