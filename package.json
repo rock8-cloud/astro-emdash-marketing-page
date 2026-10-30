@@ -22,7 +22,7 @@
     "@aws-sdk/s3-request-presigner": "^3.1149.0",
     "@iconify-json/ph": "^1.2.2",
     "astro": "^7.3.2",
-    "astro-iconset": "^0.0.4",
+    "astro-iconset": "^0.0.6",
     "emdash": "^1.0.1",
     "pg": "^8.23.1",
     "react": "19.2.4",
