@@ -25,8 +25,8 @@
     "astro-iconset": "^0.0.6",
     "emdash": "^1.0.1",
     "pg": "^8.23.1",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
