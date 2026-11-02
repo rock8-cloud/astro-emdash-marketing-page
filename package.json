@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@astrojs/node": "^11.1.5",
-    "@astrojs/react": "^6.0.5",
+    "@astrojs/react": "^7.0.0",
     "@aws-sdk/client-s3": "^3.1149.0",
     "@aws-sdk/s3-request-presigner": "^3.1149.0",
     "@iconify-json/ph": "^1.2.2",
