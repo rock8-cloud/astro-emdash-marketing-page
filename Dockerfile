@@ -3,7 +3,7 @@
 #
 # No build arguments: DATABASE_URL, S3_* and EMDASH_* are read from the
 # environment when the container starts, so one image works in every environment.
-FROM oven/bun:1.3.3 AS build
+FROM oven/bun:1.4.4 AS build
 WORKDIR /app
 
 COPY package.json bun.lock bunfig.toml ./
@@ -14,12 +14,12 @@ COPY . .
 # Astro + @astrojs/node emit a standalone server in dist/.
 RUN bun run build
 
-FROM oven/bun:1.3.3 AS deps
+FROM oven/bun:1.4.4 AS deps
 WORKDIR /app
 COPY package.json bun.lock bunfig.toml ./
 RUN bun install --frozen-lockfile --production
 
-FROM oven/bun:1.3.3-slim AS runtime
+FROM oven/bun:1.4.4-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
