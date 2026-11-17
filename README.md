@@ -38,7 +38,8 @@ bun run dev                                         # http://localhost:4321
 Open http://localhost:4321/_emdash/admin and complete the setup wizard: site
 title, keep **sample content** enabled, your email, then register a passkey.
 EmDash runs its migrations and applies `seed/seed.json`, so the landing page,
-pricing and contact pages are populated immediately.
+pricing and contact pages are populated immediately. Note that new sites created
+via the EmDash 1.5 setup wizard start in staging (noindex) until you choose "Go live".
 
 ## Layout
 
